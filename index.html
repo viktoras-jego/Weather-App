@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Weather App</title>
+  <link rel="stylesheet" href="./bootstrap/dist/css/bootstrap.css">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Raleway|PT+Sans|Source+Sans+Pro" rel="stylesheet">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<div class="flex-container col-md-4 col-md-offset-4">
+    <div class="title-text-flex font">
+        Weather app
+    </div>
+    <div class="information font">
+        <div class="city">
+            <span id="city"></span> <span id="state"></span>
+        </div>
+        <div class="degrees">
+            <span id="degrees"></span>
+        </div>
+        <div id="condition" class="condition"></div>
+        <div id="image-sky" >
+            <img id="clear-sky1" class="image-sky hidden" src="./animated/day.svg">
+            <img id="clear-sky2" class="image-sky hidden" src="./animated/night.svg">
+            <img id="few-clouds1" class="image-sky hidden" src="./animated/cloudy-day-1.svg">
+            <img id="few-clouds2" class="image-sky hidden" src="./animated/cloudy-night-1.svg">
+            <img id="scattered-clouds1" class="image-sky hidden" src="./animated/cloudy.svg">
+            <img id="scattered-clouds2" class="image-sky hidden" src="./animated/cloudy.svg">
+            <img id="broken-clouds1" class="image-sky hidden" src="./animated/cloudy-day-3.svg">
+            <img id="broken-clouds2" class="image-sky hidden" src="./animated/cloudy-night-3.svg">
+            <img id="shower-rain1" class="image-sky hidden" src="./animated/rainy-6.svg">
+            <img id="shower-rain2" class="image-sky hidden" src="./animated/rainy-6.svg">
+            <img id="rain1" class="image-sky hidden" src="./animated/rainy-4.svg">
+            <img id="rain2" class="image-sky hidden" src="./animated/rainy-4.svg">
+            <img id="thunderstorm1" class="image-sky hidden" src="./animated/thunder.svg">
+            <img id="thunderstorm2" class="image-sky hidden" src="./animated/thunder.svg">
+        </div>
+    </div>
+</div>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+<script>
+    var getIP = 'http://ip-api.com/json/';
+    $.getJSON(getIP).done(function(location) {
+         $('#city').text(location.city+",");
+         $('#state').text(location.countryCode);
+    });
+
+    function getImage(description,dayTime) {
+         switch (description) {
+              case 'clear-sky':
+                   setImage(description,dayTime);
+                   break;
+              case 'few-clouds':
+                   setImage(description,dayTime);
+                   break;
+              case 'scattered-clouds':
+                   setImage(description,dayTime);
+                   break;
+              case 'broken-clouds':
+                   setImage(description,dayTime);
+                   break;
+              case 'shower-rain':
+                   setImage(description,dayTime);
+                   break;
+              case 'rain':
+                   setImage(description,dayTime);
+                   break;
+              case 'thunderstorm':
+                   setImage(description,dayTime);
+                   break;
+              default:
+                   $('#few-clouds1').removeClass('hide');
+         }
+    }
+
+    function setImage(description,dayTime){
+
+         idName = "";
+
+         newDescription = "#" + description;
+         if(dayTime === "Night"){
+              idName =newDescription +"2";
+         }
+         else {
+              idName =newDescription +"1";
+         }
+        console.log(idName);
+         $(idName).removeClass('hidden');
+
+    }
+
+
+    function setData(weather) {
+         $('#degrees').text(weather.main.temp+" °C");
+         $('#condition').text(weather.weather[0].main);
+         Time =weather.weather[0].icon;
+         Time.includes("n") ? dayTime="Night" : dayTime="day";
+         if(dayTime === "Night"){
+
+         }
+         description = weather.weather[0].description;
+         newDescription = "";
+         if(description.split(" ").length === 2){
+              newDescription = description.split(" ").join('-');
+         }
+         getImage(newDescription,dayTime);
+    }
+    var openWeatherMap = 'http://api.openweathermap.org/data/2.5/weather';
+    $.getJSON(getIP).done(function(location) {
+        $.getJSON(openWeatherMap, {
+            lat: location.lat,
+            lon: location.lon,
+            units: 'metric',
+            APPID: '81090393a2c8e7eec0dec8f19e843fb6'
+        }).done(function(weather) {
+           console.log(weather);
+            setData(weather);
+        })
+    });
+
+</script>
+</body>
+</html>
